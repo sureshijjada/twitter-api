@@ -81,7 +81,8 @@ const authenticateToken = (request, response, next) => {
   } else {
     jwt.verify(jwtToken, "suresh", async (error, payload) => {
       if (error) {
-        response.send("invalid Access Token");
+        response.status(401);
+        response.send("Invalid JWT Token");
       } else {
         next();
       }
@@ -162,7 +163,12 @@ app.delete(
     const { tweetId } = request.params;
     const deleteArray = `delete form tweet where tweet_id = ${tweetId};`;
     await db.run(deleteArray);
-    response.send("Tweet Removed");
+    if (tweetId !== undefined) {
+      response.send("Tweet Removed");
+    } else {
+      response.status(401);
+      response.send("Invalid Request");
+    }
   }
 );
 
